@@ -48,6 +48,23 @@ function whoPlayFirst()
 	fi
 }
 
+#FUNCTION TO DISPLAY BOARD
+function displayBoard()
+{
+	echo "-------------"
+	for((rows=0; rows<$ROWS; rows++))
+	do
+		for((columns=0; columns<$COLUMNS; columns++))
+		do
+			printf "| ${board[$rows,$columns]} "
+		done
+		printf "|"
+		printf "\n"
+		echo "-------------"
+	done
+}
+
 resetBoard
 assignLetter
 whoPlayFirst
+displayBoard
