@@ -28,12 +28,14 @@ function assignLetter()
 	letterCheck=$((RANDOM % 2))
 	if [ $letterCheck -eq $SIGN ]
 	then
-		echo player=O
-		echo computer=X
+		player=O
+		computer=X
 	else
-		echo player=X
-		echo computer=O
+		player=X
+		computer=O
 	fi
+	echo "Player=$player"
+	echo "Computer=$computer"
 }
 
 #FUNCTION TO TOSS FOR WHO WILL PLAY FIRST
@@ -64,7 +66,56 @@ function displayBoard()
 	done
 }
 
+#FUNCTION TO CHECK WINNER
+function getWinner()
+{
+	local player=$1
+	column=0
+	flag=false
+
+	for((row=0; row<$ROWS; row++))
+	do
+		if [[ ${board[$row,$column]}${board[$row,$(($column+1))]}${board[$row,$(($column+2))]} == $player$player$player ]]
+		then
+			flag=true
+			printf "$flag"
+			return
+		fi
+	done
+
+	row=0
+	for((column=0; column<$COLUMNS; column++))
+	do
+		if [[ ${board[$row,$column]}${board[$(($row+1)),$column]}${board[$(($row+2)),$column]} == $player$player$player ]]
+		then
+			flag=true
+			printf "$flag"
+			return
+		fi
+	done
+
+	row=0
+	column=0
+	if [[ ${board[$row,$column]}${board[$(($row+1)),$(($column+1))]}${board[$(($row+2)),$(($column+2))]} == $player$player$player ]]
+	then
+		flag=true
+		printf "$flag"
+		return
+	elif [[ ${board[$row,$(($column+2))]}${board[$(($row+1)),$(($column+1))]}${board[$(($row+2)),$column]} == $player$player$player ]]
+	then
+		flag=true
+		printf "$flag"
+		return
+	fi
+	echo $flag
+}
+
 resetBoard
 assignLetter
 whoPlayFirst
 displayBoard
+board[0,2]=X
+board[1,1]=X
+board[2,0]=X
+displayBoard
+getWinner $computer
