@@ -36,5 +36,18 @@ function assignLetter()
 	fi
 }
 
+#FUNCTION TO TOSS FOR WHO WILL PLAY FIRST
+function whoPlayFirst()
+{
+	toss=$((RANDOM % 2))
+	if [ $toss -eq $SIGN ]
+	then
+		echo "Computer wins the toss."
+	else
+		echo "Player wins the toss."
+	fi
+}
+
 resetBoard
 assignLetter
+whoPlayFirst
