@@ -6,6 +6,11 @@ echo " ****************************** WELCOME TO TIC TAC TOE GAME **************
 ROWS=3
 COLUMNS=3
 SIGN=0
+TOTAL_NUMBER_OF_CELL=9
+IS_EMPTY=" "
+
+#VARIABLE
+playerTurnCount=0
 
 #DECLARE 2-DIMENSIONAL ARRAY
 declare -A board
@@ -45,8 +50,10 @@ function whoPlayFirst()
 	if [ $toss -eq $SIGN ]
 	then
 		echo "Computer wins the toss."
+		tossWinner=$computer
 	else
 		echo "Player wins the toss."
+		tossWinner=$player
 	fi
 }
 
@@ -78,7 +85,6 @@ function getWinner()
 		if [[ ${board[$row,$column]}${board[$row,$(($column+1))]}${board[$row,$(($column+2))]} == $player$player$player ]]
 		then
 			flag=true
-			printf "$flag"
 			return
 		fi
 	done
@@ -89,7 +95,6 @@ function getWinner()
 		if [[ ${board[$row,$column]}${board[$(($row+1)),$column]}${board[$(($row+2)),$column]} == $player$player$player ]]
 		then
 			flag=true
-			printf "$flag"
 			return
 		fi
 	done
@@ -99,23 +104,78 @@ function getWinner()
 	if [[ ${board[$row,$column]}${board[$(($row+1)),$(($column+1))]}${board[$(($row+2)),$(($column+2))]} == $player$player$player ]]
 	then
 		flag=true
-		printf "$flag"
 		return
 	elif [[ ${board[$row,$(($column+2))]}${board[$(($row+1)),$(($column+1))]}${board[$(($row+2)),$column]} == $player$player$player ]]
 	then
 		flag=true
-		printf "$flag"
 		return
 	fi
 	echo $flag
 }
 
+#FUNCTION FOR PLAYER TURN
+function playerTurn()
+{
+	while [ $playerTurnCount -ne $TOTAL_NUMBER_OF_CELL ]
+	do
+		if [[ $flagSet == false ]]
+		then
+			echo "Player $player Turn: "
+			((playerTurnCount++))
+			read -p "Enter number of row cell: " rowCell
+			read -p "Enter number of column cell: " columnCell
+
+			while [[ ${board[$rowCell,$columnCell]} != $IS_EMPTY ]]
+			do
+				echo "Cell is already occupied enter another cell value."
+				read -p "Enter number of row cell: " rowCell
+				read -p "Enter number of column cell: " columnCell
+			done
+
+			board[$rowCell,$columnCell]=$player
+			displayBoard
+			getWinner $player
+			if [[ $flag == true ]]
+			then
+				printf "Player $player wins the game."
+				return
+			fi
+			flagSet=true
+		else
+			echo "Computer $computer Turn: "
+			((playerTurnCount++))
+			rowCell=$(( RANDOM % 3 ))
+			columnCell=$(( RANDOM % 3 ))
+
+			while [[ ${board[$rowCell,$columnCell]} != $IS_EMPTY ]]
+			do
+				rowCell=$(( RANDOM % 3 ))
+				columnCell=$(( RANDOM % 3 ))
+			done
+
+			board[$rowCell,$columnCell]=$computer
+			displayBoard
+			getWinner $computer
+			if [[ $flag == true ]]
+			then
+				printf "Computer $computer wins the game."
+				return
+			fi
+			flagSet=false
+		fi
+	done
+}
+
 resetBoard
 assignLetter
 whoPlayFirst
-displayBoard
-board[0,2]=X
-board[1,1]=X
-board[2,0]=X
-displayBoard
-getWinner $computer
+
+if [[ $tossWinner == $computer ]]
+then
+	flagSet=true
+	playerTurn
+else
+	flagSet=false
+	displayBoard
+	playerTurn
+fi
