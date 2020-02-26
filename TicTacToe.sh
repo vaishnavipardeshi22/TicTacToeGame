@@ -113,9 +113,7 @@ function getWinner()
 		flag=true
 		return
 	fi
-	echo $flag
 }
-
 
 #FUNCTION TO CHECK WINNING MOVE FOR COMPUTER
 function checkComputerWinMove()
@@ -217,9 +215,16 @@ function playerTurn()
 			read -p "Enter number of row cell: " rowCell
 			read -p "Enter number of column cell: " columnCell
 
+			while [[ $rowCell -lt 0 || $columnCell -lt 0 || $rowCell -gt 2 || $columnCell -gt 2 ]]
+			do
+				echo "Invalid cell."
+				read -p "Enter number of row cell: " rowCell
+				read -p "Enter number of column cell: " columnCell
+			done
+
 			while [[ ${board[$rowCell,$columnCell]} != $IS_EMPTY ]]
 			do
-				echo "Cell1 is occupied enter another value."
+				echo "Cell is occupied enter another value."
 				read -p "Enter number of row cell: " rowCell
 				read -p "Enter number of column cell: " columnCell
 			done
@@ -238,6 +243,12 @@ function playerTurn()
 			echo "$computer Turn: "
 			((playerTurnCount++))
 			checkComputerWinMove $computer
+
+			if [ $turnPlayed -eq 0 ]
+			then
+				checkComputerWinMove $player
+			fi
+
 			if [ $turnPlayed -eq 0 ]
 			then
 				rowCell=$(( RANDOM % 3 ))
@@ -259,6 +270,11 @@ function playerTurn()
 				return
 			fi
 			flagSet=false
+		fi
+
+		if [[ $playerTurnCount == $TOTAL_NUMBER_OF_CELL && $flag == false ]]
+		then
+			printf "Match tie."
 		fi
 	done
 }
