@@ -203,6 +203,46 @@ function checkComputerWinMove()
 	fi
 }
 
+#FUNCTION TO TAKE CORNER FOR COMPUTER IF WINNING POSIBILITIES ARE NOT AVAILABLE
+function takeCornerMove()
+{
+	rowCell=$(( RANDOM % 3 ))
+	columnCell=$(( RANDOM % 3 ))
+
+	row=0
+	column=0
+
+	while [[ ${board[$rowCell,$columnCell]} != $IS_EMPTY ]]
+	do
+		rowCell=$(( RANDOM % 3 ))
+		columnCell=$(( RANDOM % 3 ))
+	done
+
+	if [[ $rowCell == $row && $columnCell == $column ]]
+	then
+		board[$rowCell,$columnCell]=$computer
+		turnPlayed=1
+		return
+	elif [[ $rowCell == $row && $columnCell == $(($column+2)) ]]
+	then
+		board[$rowCell,$columnCell]=$computer
+		turnPlayed=1
+		return
+	elif [[ $rowCell == $(($row+2)) && $columnCell == $(($column+2)) ]]
+	then
+		board[$rowCell,$columnCell]=$computer
+		turnPlayed=1
+		return
+	elif [[ $rowCell == $(($row+2)) && $columnCell == $column ]]
+	then
+		board[$rowCell,$columnCell]=$computer
+		turnPlayed=1
+		return
+	else
+		takeCornerMove
+	fi
+}
+
 #FUNCTION FOR PLAYER TURN
 function playerTurn()
 {
@@ -247,6 +287,11 @@ function playerTurn()
 			if [ $turnPlayed -eq 0 ]
 			then
 				checkComputerWinMove $player
+			fi
+
+			if [ $turnPlayed -eq 0 ]
+			then
+				takeCornerMove
 			fi
 
 			if [ $turnPlayed -eq 0 ]
