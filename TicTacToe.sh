@@ -296,23 +296,29 @@ function playerTurn()
 			turnPlayed=0
 			echo "$computer Turn: "
 			((playerTurnCount++))
+
+			#FUNCTION CALL FOR COMPUTER WIN MOVES
 			checkComputerWinMove $computer
 
+			#FUNCTION CALL FOR BLOCK THE OPPOENENT 
 			if [ $turnPlayed -eq 0 ]
 			then
 				checkComputerWinMove $player
 			fi
 
+			#FUNCTION CALL FOR CORNER MOVE FOR COMPUTER
 			if [ $turnPlayed -eq 0 ]
 			then
 				takeCornerMove
 			fi
 
+			#FUNCTION CALL FOR CENTER MOVE
 			if [ $turnPlayed -eq 0 ]
 			then
 				takeCentreMove
 			fi
 
+			#TAKE SIDES RANDOMLY AT LAST
 			if [ $turnPlayed -eq 0 ]
 			then
 				rowCell=$(( RANDOM % 3 ))
