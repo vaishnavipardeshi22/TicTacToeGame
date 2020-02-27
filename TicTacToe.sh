@@ -243,6 +243,20 @@ function takeCornerMove()
 	fi
 }
 
+#TAKE CENTRE MOVE IF CORNERS ARE NOT EMPTY
+function takeCentreMove()
+{
+	row=0
+	column=0
+
+	if [[ ${board[$(($row+1)),$(($column+1))]} == $IS_EMPTY ]]
+	then
+		board[$(($row+1)),$(($column+1))]=$computer
+		turnPlayed=1
+		return
+	fi
+}
+
 #FUNCTION FOR PLAYER TURN
 function playerTurn()
 {
@@ -292,6 +306,11 @@ function playerTurn()
 			if [ $turnPlayed -eq 0 ]
 			then
 				takeCornerMove
+			fi
+
+			if [ $turnPlayed -eq 0 ]
+			then
+				takeCentreMove
 			fi
 
 			if [ $turnPlayed -eq 0 ]
